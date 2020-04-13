@@ -1,36 +1,36 @@
 import React from "react";
-import BookRow from "./bookrow";
 import BookCategoryRow from "./bookcategoryrow";
 
-class Bookshelf extends React.Component {
-  render() {
-    console.log(this.props.books);
-    const rows = [];
-    // let lastCategory = null;
+export default function Bookshelf(props) {
+  const currentlyReading = [];
+  const none = [];
+  const wantToRead = [];
+  const read = [];
 
-    this.props.books.forEach((book) => {
-      console.log(book);
-      //   if (book.category !== lastCategory) {
-      //   rows.push(
-      //       <BookCategoryRow category={book.category} key={book.category} />
-      //     );
-      //   }
-      //   rows.push(<BookRow book={book} key={book.name} />);
-      //   lastCategory = book.category;
-    });
+  // let lastCategory = null;
 
-    return (
-      <table>
-        {/* <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody> */}
-      </table>
-    );
-  }
+  this.props.books.forEach((book) => {
+    console.log(book);
+    // if (book.)
+    //   if (book.category !== lastCategory) {
+    //   rows.push(
+    //       <BookCategoryRow category={book.category} key={book.category} />
+    //     );
+    //   }
+    //   rows.push(<BookRow book={book} key={book.name} />);
+    //   lastCategory = book.category;
+  });
+
+  return (
+    <div>
+      <BookCategoryRow
+        displayName="Currently Reading"
+        books={currentlyReading}
+      />
+      <BookCategoryRow displayName="Want to Read" books={wantToRead} />
+      <BookCategoryRow displayName="Read" books={read} />
+
+      <BookCategoryRow displayName="None" books={none} />
+    </div>
+  );
 }
-
-export default Bookshelf;
