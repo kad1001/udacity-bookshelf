@@ -1,16 +1,25 @@
 import React from "react";
-import BookRow from "./bookrow";
+// import BookRow from "./bookrow";
+import Book from "./Book";
 
 export default function BookCategoryRow(props) {
   return (
     <div className="bookshelf">
-      <h2 className="bookshelf-title">Currently Reading</h2>
+      <h2 className="bookshelf-title">{props.displayName}</h2>
 
-      {/* {isLoggedIn
-        ? <LogoutButton onClick={this.handleLogoutClick} />
-        : <LoginButton onClick={this.handleLoginClick} />
-      } */}
-      <BookRow books={this.props.books} />
+      <div className="bookshelf-books">
+        <ol className="books-grid">
+          {props.books.map((book) => (
+            <Book
+              key={book.id}
+              title={book.title}
+              id={book.id}
+              authors={book.authors}
+              shelf={book.shelf}
+            />
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }
