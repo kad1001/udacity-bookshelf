@@ -1,24 +1,36 @@
-{/*         
-        </div>{this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a
-                className="close-search"
-                onClick={() => this.setState({ showSearchPage: false })}
-              >
-                Close
-              </a>
-              <div className="search-books-input-wrapper"> */}
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import BookShelf from "./bookshelf";
 
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-             
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
+export default class SearchBook extends Component {
+  componentDidMount() {
+    this.props.emptybooks();
+  }
+  render() {
+    //console.log(this.state.returnedBooks)
+    return (
+      <div className="search-books">
+        <div className="search-books-bar">
+          <Link className="close-search" to="/">
+            Close
+          </Link>
+          <div className="search-books-input-wrapper">
+            <input
+              type="text"
+              value={this.props.books.string}
+              onChange={this.props.searchQuery}
+              placeholder="Search by title or author"
+            />
+          </div>
+        </div>
+        <div className="search-books-results">
+          <BookShelf
+            updateShelf={this.props.updateShelf}
+            shelf="Search Results"
+            books={this.props.books}
+          />
+        </div>
+      </div>
+    );
+  }
+}

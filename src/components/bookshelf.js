@@ -1,69 +1,55 @@
-import React from "react";
-import BookCategoryRow from "./bookcategoryrow";
-// import { render } from "@testing-library/react";
+import React, { Component } from "react";
+//import HomePage from './HomePage';
 
-// class Bookshelf extends React.Component {
-//   // constructor(props) {
-//   // super(props);
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       currentlyReading: [],
-//       none: [],
-//       wantToRead: [],
-//       read: [],
-//       books: []
-//       // allBooks: this.props.b
-//     };
-//   }
-// export default function Bookshelf(props) {
-//   //  joined = this.state.books.concat(this.props.books);
-//   // this.setState({ myArray: joined })
-//   // render() {
-//   // let joined = this.state.books.concat(this.props.books);
-//   // this.setState({ books: this.props.books });
-//   // console.log(this.state);
-
-//   const books = props.books;
-//   const wantToRead = [];
-//   const read = [];
-//   const none = [];
-//   const currentlyReading = [];
-
-//   books.forEach((book) => {
-//     // console.log(book);
-
-//     // console.log(joined);
-//     switch (book.shelf) {
-//       case "wantToRead":
-//         // let j = this.state.wantToRead.concat(book);
-//         wantToRead.push(book);
-//         // this.setState({ wantToRead: book });
-//         break;
-//       case "read":
-//         read.push(book);
-//         break;
-//       case "none":
-//         none.push(book);
-//         break;
-//       case "currentlyReading":
-//         currentlyReading.push(book);
-//         break;
-//       default:
-//         console.log("no book shelf found");
-//     }
-//   });
-
-//   // });
-//   return (
-//     <div>
-//       {/* <BookCategoryRow
-//           displayName="Currently Reading"
-//           books={currentlyReading}
-//         /> */}
-//       <BookCategoryRow displayName="Want to Read" books={wantToRead} />
-//       <BookCategoryRow displayName="Read" books={read} />
-//       <BookCategoryRow displayName="None" books={none} /> */}
-//     </div>
-//   );
-// }
+export default class BookShelf extends Component {
+  render() {
+    return (
+      <div className="bookshelf">
+        <h2 className="bookshelf-title">{this.props.shelf}</h2>
+        <div className="bookshelf-books">
+          <ol className="books-grid">
+            {Array.isArray(this.props.books) &&
+              this.props.books.map((book, index) => (
+                <li key={index}>
+                  <div className="book">
+                    <div className="book-top">
+                      <div
+                        className="book-cover"
+                        style={{
+                          width: 128,
+                          height: 193,
+                          backgroundImage: `url("http://books.google.com/books/content?id=${this.props.id}&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api")`
+                        }}
+                      ></div>
+                      <div className="book-shelf-changer">
+                        <select
+                          value={book.shelf}
+                          onChange={(event) =>
+                            this.props.updateShelf(book, event.target.value)
+                          }
+                        >
+                          <option disabled>Move to...</option>
+                          <option value="currentlyReading">
+                            Currently Reading
+                          </option>
+                          <option value="wantToRead">Want to Read</option>
+                          <option value="read">Read</option>
+                          <option value="none">None</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="book-title">{book.title}</div>
+                    <div className="book-authors">
+                      {Array.isArray(book.authors)
+                        ? book.authors.join(", ")
+                        : ""}
+                    </div>
+                  </div>
+                </li>
+              ))}
+          </ol>
+        </div>
+      </div>
+    );
+  }
+}
