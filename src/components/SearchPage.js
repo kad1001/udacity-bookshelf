@@ -7,7 +7,6 @@ export default class SearchBook extends Component {
     this.props.emptybooks();
   }
   render() {
-    //console.log(this.state.returnedBooks)
     return (
       <div className="search-books">
         <div className="search-books-bar">

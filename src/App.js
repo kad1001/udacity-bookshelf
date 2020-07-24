@@ -1,78 +1,86 @@
 import React from "react";
-import { Route } from 'react-router-dom';
+import { Route } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
-import Bookshelf from "./components/bookshelf";
 import SearchPage from "./components/SearchPage";
+import HomePage from "./components/Homepage";
 
-class BooksApp extends React.Component {
+export default class BooksApp extends React.Component {
   state = {
     books: [],
     searchedBooks: []
   };
 
+  // Initial API request to apply books to state
   async componentDidMount() {
-    let b = await BooksAPI.getAll(); // api request
-
-    this.setState((prevState) => ({
-      books: [...prevState.books, ...b]
-    }));
+    const b = await BooksAPI.getAll(); // api request
+    this.setState({ books: b });
   }
 
+  // Called in <SearchPage />
   emptyBooks = () => this.setState({ searchedBooks: [] }); // clear collection of searched books
 
-  searchQuery = async (event) => {
-    const query = event.target.value;
+  // Called in <SearchPage />
+  searchQuery = async (e) => {
+    const query = e.target.value;
     if (query !== "") {
-      let searchResults = await BooksAPI.search(query);
+      const searchResults = await BooksAPI.search(query);
 
+      // Nothing found for search query
       if (!searchResults || searchResults.error) {
+        this.setState({ searchedBooks: [] }); // reset searched books to none
         return;
       }
 
-      // sync books by mapping over searchResults, and
-      // iterating over this.props.books
-
+      // sync books
       const syncedBooks = searchResults.map((searchResult) => {
         this.state.books.forEach((book) => {
-          if (book.id === searchResult.id) searchResult.shelf = book.shelf;
+          if (book.id === searchResult.id) {
+            searchResult.shelf = book.shelf;
+          }
         });
         return searchResult;
       });
 
-      // finally, setState
+      // apply the books returned by search to the searched books state
       this.setState({ searchedBooks: syncedBooks });
     }
+    // else {
+    this.setState({ searchedBooks: [] }); // default to empty array if no seached queries
+    // }
   };
 
+  // Called in <Homepage /> and <SearchPage />
   updateShelf = async (book, shelf) => {
     if (shelf === "none") {
+      // Remove from state object / out of display
       this.setState((prevState) => ({
         books: prevState.books.filter((b) => b.id !== book.id)
       }));
     }
 
     if (book.shelf !== shelf) {
+      // move the book to the correct shelf
       await BooksAPI.update(book, shelf);
+
       const { books, searchedBooks } = this.state;
       const booksIds = books.map((b) => b.id);
       const searchedBooksIds = books.map((b) => b.id);
-      let newBooks = []; //if book already on shelf: reshelf; otherwise, add to books
+      let myNewReads = []; //if book already on shelf: reshelf; otherwise, add to books
       let newSearchedBooks = [];
 
       if (booksIds.includes(book.id) || searchedBooksIds.includes(book.id)) {
-        newBooks = books.map((b) =>
-          b.id === book.id ? { ...b, shelf } : b
-        );
+        myNewReads = books.map((b) => (b.id === book.id ? { ...b, shelf } : b)); // if the id of each book isn't already there, add it
         newSearchedBooks = searchedBooks.map((b) =>
           b.id === book.id ? { ...b, shelf } : b
         );
       } else {
         book.shelf = shelf;
-        newBooks = [...books, book];
+        myNewReads = [...books, book];
         newSearchedBooks = [...searchedBooks, book];
       }
-      this.setState({ books: books, searchedBooks: newSearchedBooks });
+
+      this.setState({ books: myNewReads, searchedBooks: newSearchedBooks }); // apply new results to the state
     }
   };
 
@@ -80,20 +88,27 @@ class BooksApp extends React.Component {
     console.log("state in App.js: ", this.state);
     return (
       <div className="app">
-        <Route path="/search" exact render={() => (
-          <SearchPage emptybooks={this.emptyBooks} searchQuery={this.searchQuery} updateShelf={this.updateShelf} books={this.state.searchedBooks} />
-        )} />
+        <Route
+          path="/search"
+          exact
+          render={() => (
+            <SearchPage
+              emptybooks={this.emptyBooks}
+              searchQuery={this.searchQuery}
+              updateShelf={this.updateShelf}
+              books={this.state.searchedBooks}
+            />
+          )}
+        />
 
-
-          <Route path="/" exact render={() => (
-
-
-            <Bookshelf updateShelf={this.updateShelf} books={this.state.books} />
-          )} />
-
+        <Route
+          path="/"
+          exact
+          render={() => (
+            <HomePage updateShelf={this.updateShelf} books={this.state.books} />
+          )}
+        />
       </div>
     );
   }
 }
-
-export default BooksApp;

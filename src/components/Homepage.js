@@ -7,7 +7,7 @@ export default class HomePage extends Component {
     render() {
         return <div className="list-books">
             <div className="list-books-title">
-                <h1>MyReads</h1>
+                <h1>Kelly's Reads</h1>
             </div>
             <div className="list-books-content">
                 <BookShelf updateShelf={this.props.updateShelf} shelf="Currently Reading" books={this.props.books.filter(book => book.shelf === 'currentlyReading')} />,
