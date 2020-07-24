@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import BookShelf from "./bookshelf";
 
 export default class SearchBook extends Component {
-  componentDidMount() {
+  componentDidMount() { // clean slate
     this.props.emptybooks();
   }
   render() {

@@ -45,9 +45,9 @@ export default class BooksApp extends React.Component {
       // apply the books returned by search to the searched books state
       this.setState({ searchedBooks: syncedBooks });
     }
-    // else {
-    this.setState({ searchedBooks: [] }); // default to empty array if no seached queries
-    // }
+    else {
+      this.setState({ searchedBooks: [] }); // default to empty array if no seached queries
+    }
   };
 
   // Called in <Homepage /> and <SearchPage />
@@ -63,21 +63,22 @@ export default class BooksApp extends React.Component {
       // move the book to the correct shelf
       await BooksAPI.update(book, shelf);
 
-      const { books, searchedBooks } = this.state;
-      const booksIds = books.map((b) => b.id);
-      const searchedBooksIds = books.map((b) => b.id);
-      let myNewReads = []; //if book already on shelf: reshelf; otherwise, add to books
+      const booksIds = this.state.books.map((b) => b.id);
+      const searchedBooksIds = this.state.books.map((b) => b.id);
+
+      // Books to replace the current books in state 
+      let myNewReads = [];
       let newSearchedBooks = [];
 
       if (booksIds.includes(book.id) || searchedBooksIds.includes(book.id)) {
-        myNewReads = books.map((b) => (b.id === book.id ? { ...b, shelf } : b)); // if the id of each book isn't already there, add it
-        newSearchedBooks = searchedBooks.map((b) =>
+        myNewReads = this.state.books.map((b) => (b.id === book.id ? { ...b, shelf } : b)); // if the id of each book isn't already there, add it
+        newSearchedBooks = this.state.searchedBooks.map((b) =>
           b.id === book.id ? { ...b, shelf } : b
         );
       } else {
         book.shelf = shelf;
-        myNewReads = [...books, book];
-        newSearchedBooks = [...searchedBooks, book];
+        myNewReads = [...this.state.books, book];
+        newSearchedBooks = [...this.state.searchedBooks, book];
       }
 
       this.setState({ books: myNewReads, searchedBooks: newSearchedBooks }); // apply new results to the state
